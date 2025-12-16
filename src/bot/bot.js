@@ -19,14 +19,14 @@ const checkIfUserSubscribed = async (chatId) => {
     return true;
   } catch (e) {
     console.log("CATCH ERROR (getChatMember):", e);
-    return false; // MUHIM!
+    return false;
   }
 };
 
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const firstname = msg.chat.first_name;
-  const text = msg.text;
+  const text = msg.text?.trim();
 
   const subscription = await checkIfUserSubscribed(chatId);
 
@@ -45,9 +45,77 @@ bot.on("message", async (msg) => {
     );
   }
 
-  if (text === "/start") return onStart(msg);
+  // /start
+  if (text === "/start") {
+    return onStart(msg);
+  }
 
-  bot.sendMessage(chatId, `Assalomu alaykum, ${firstname}`);
+  // ===== MENYU TUGMALARI =====
+
+  if (text === "📚 Kurslar") {
+    return bot.sendMessage(
+      chatId,
+      `📚 Bizning kurslarimiz:
+
+1️⃣ Web dasturlash
+2️⃣ Backend (Node.js)
+3️⃣ Telegram bot yaratish
+4️⃣ Grafik dizayn`
+    );
+  }
+
+  if (text === "✍️ Ro‘yxatdan o‘tish") {
+    return bot.sendMessage(
+      chatId,
+      `✍️ Ro‘yxatdan o‘tish uchun:
+
+Ism va familiyangizni yozing
+📞 Telefon raqamingizni yuboring`
+    );
+  }
+
+  if (text === "ℹ️ Markaz haqida") {
+    return bot.sendMessage(
+      chatId,
+      `ℹ️ O‘quv markazimiz haqida:
+
+🏫 Zamonaviy sinflar
+👨‍🏫 Tajribali ustozlar
+🎓 Sertifikat beriladi`
+    );
+  }
+
+  if (text === "💬 Fikr bildirish") {
+    return bot.sendMessage(
+      chatId,
+      `💬 Taklif yoki shikoyatingizni yozib qoldiring.
+Biz albatta ko‘rib chiqamiz ✅`
+    );
+  }
+
+  if (text === "❓ Yordam") {
+    return bot.sendMessage(
+      chatId,
+      `❓ Yordam bo‘limi:
+
+/start — botni qayta ishga tushirish
+Menyudan kerakli bo‘limni tanlang`
+    );
+  }
+
+  if (text === "👤 Profil") {
+    return bot.sendMessage(
+      chatId,
+      `👤 Sizning profilingiz:
+
+🆔 ID: ${msg.from.id}
+👤 Ism: ${firstname}
+🔗 Username: @${msg.from.username || "yo‘q"}`
+    );
+  }
+
+  // Agar hech qaysi tugma bosilmasa
+  return bot.sendMessage(chatId, `Assalomu alaykum, ${firstname}`);
 });
 
 bot.on("callback_query", async (query) => {
@@ -67,4 +135,4 @@ bot.on("callback_query", async (query) => {
   }
 });
 
-console.log("Bot ishga tushdi..."); 
+console.log("Bot ishga tushdi...");
